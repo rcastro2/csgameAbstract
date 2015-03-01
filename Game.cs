@@ -11,22 +11,31 @@ namespace CSGame{
 		public bool leftButton;
 		public bool rightButton;
 	}
+	public class Setting{
+		public int fps = 60;
+		public int width = 800;
+		public int height = 600;
+	}
 	public class Game : System.Windows.Forms.Form{
 
 		//bm is "Canvas" in memory where we can draw
 		Bitmap bm = new Bitmap(1000, 1000);
 		//bmg is the Graphics we will use in order to draw on the "Canvas"
 		Graphics canvas;
+
+		//Support objects for game
 		Input tool;
-		Start main;
+		Setting game;
+
+		//Object for game logic
+		dynamic main;
 
 		//Main starts the program which creates and runs the Form
 		static void Main(){
 			Application.Run(new Game());
 		}
 
-		//This function must have the same name as the program.  This is called a constructor.
-		//Any variables that need initializing going here.
+		//Game Constructor
 		public Game(){
 			InitializeComponent();
 		}
@@ -36,10 +45,13 @@ namespace CSGame{
 			//Following line connects canvas to bm so that we can draw on it
 			canvas = Graphics.FromImage(bm);
 			tool = new Input();
-			main = new Start(canvas,tool);
+			game = new Setting();
+
+			//main must be set to an instance of the Class holding the game logic
+			main = new Template(canvas,tool,game);
+
 			//Enable the timer for create animation
 		  tmrGame.Enabled = true;
-
 		}
 
 		//Paints to the Form1
@@ -48,6 +60,7 @@ namespace CSGame{
 			e.Graphics.DrawImage(bm, 0, 0);
 		}
 
+		//Track Key Pressed in Input Class
 		private void Game_KeyDown(object sender,KeyEventArgs e){
 			tool.keyDown = e.KeyCode.ToString();
 		}
@@ -56,12 +69,14 @@ namespace CSGame{
 			tool.keyDown = "";
 		}
 
+		//Track Mouse Position in Input Class
 		private void Game_MouseMove(object sender, MouseEventArgs e)
 		{
 			tool.mouseX = e.X;
 			tool.mouseY = e.Y;
 		}
 
+		//Track Mouse Buttons in Input Class
 		private void Game_MouseDown(object sender, MouseEventArgs e)
 		{
 			tool.leftButton = e.Button == MouseButtons.Left;
@@ -76,7 +91,15 @@ namespace CSGame{
 
 		//Timer controls the game
 		private void tmrGame_Tick(object sender, EventArgs e){
+			//Call update method for the Template Class
 			main.update();
+
+			//Modify Game variables from Settings
+			tmrGame.Interval = 1000 / game.fps;
+			this.Width = game.width;
+			this.Height = game.height;
+
+			//Force the form to repaint
 			this.Invalidate();
 		}
 
@@ -97,6 +120,8 @@ namespace CSGame{
 			this.Width = 800;
 			this.Height = 600;
 			this.DoubleBuffered = true;
+			this.MaximizeBox = false;
+
 			this.Load += new EventHandler(this.Game_Load);
 			this.KeyDown += new KeyEventHandler(this.Game_KeyDown);
 			this.KeyUp += new KeyEventHandler(this.Game_KeyUp);
@@ -104,6 +129,7 @@ namespace CSGame{
 			this.MouseDown += new MouseEventHandler(this.Game_MouseDown);
 			this.MouseUp += new MouseEventHandler(this.Game_MouseUp);
 			this.Paint += new PaintEventHandler(this.Game_Paint);
+
 		}
 	}
 }
