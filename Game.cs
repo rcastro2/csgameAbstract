@@ -7,9 +7,11 @@ namespace CSGame{
 	public class Setting{
 		public Graphics canvas;
 
+		public Form form;
 		public int interval = 10;
 		public int width = 800;
 		public int height = 600;
+
 		//Formerly part of the Input Class
 		public string keyDown;
 		public int mouseX;
@@ -48,9 +50,10 @@ namespace CSGame{
 			game.width = this.Width;
 			game.height = this.Height;
 			game.canvas = canvas;
+			game.form = this;
 
 			//main must be set to an instance of the Class holding the game logic
-			main = new ScreenSaver(game);
+			main = new ScreenSaverII(game);
 
 			//Enable the timer for create animation
 		  tmrGame.Enabled = true;
