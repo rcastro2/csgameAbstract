@@ -50,7 +50,7 @@ namespace CSGame{
 			game.canvas = canvas;
 
 			//main must be set to an instance of the Class holding the game logic
-			main = new Template(game);
+			main = new ScreenSaver(game);
 
 			//Enable the timer for create animation
 		  tmrGame.Enabled = true;
